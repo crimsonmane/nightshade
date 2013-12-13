@@ -17,7 +17,7 @@ Our scripts are open source. They are adapted from single-line terminal commands
 
 Credit:
 * *
-Two_Dogs - Project Manager aka he's the one who says what data should be collected.
+Two_Dogs - Geek, likes to ferret out info from resources available.
 * *
 crimsonmane - Author aka writing the scripts.
 * *
