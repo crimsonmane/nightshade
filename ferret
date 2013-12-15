@@ -6,7 +6,9 @@
 #
 
 initialSetup(){
+  tput setaf 1 #Red text
   echo "Updating -inxi- in order to provide correct output..."
+  tput sgr0 #Reset text
   if ! dpkg -l | grep pastebinit;then
       sudo aptitude install pastebinit
   fi
