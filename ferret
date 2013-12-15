@@ -1,7 +1,11 @@
 #! /bin/bash
+#
+# Written by: crimsonmane
+# https://github.com/crimsonmane/nightshade
+#
 
 initialSetup(){
-  echo "Running mandatory update..."
+  echo "Updating -inxi- in order to provide correct output..."
   if ! dpkg -l | grep pastebinit;then
       sudo aptitude install pastebinit
   fi
@@ -13,16 +17,16 @@ shareLink(){
 }
 
 sniffSound(){
-  inxi -Sc0 > diag.file
-  inxi -Axc0 >> diag.file
+  inxi -Sc0 > temp.file
+  inxi -Axc0 >> femp.file
   if head -1 diag.file | grep "Linux Mint 16";then
-    find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> diag.file
+    find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
   else
-    find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> diag.file
+    find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
   fi
-  pastebinit diag.file
+  pastebinit temp.file
   shareLink
-  rm diag.file
+  rm temp.file
 }
 
 sniffXorg(){
