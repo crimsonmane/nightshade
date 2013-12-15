@@ -3,6 +3,7 @@
 # Written by: crimsonmane
 # https://github.com/crimsonmane/nightshade
 # revision 20131214-2318
+#
 
 initialSetup(){
   echo "Updating -inxi- in order to provide correct output..."
