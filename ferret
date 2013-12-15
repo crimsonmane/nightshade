@@ -2,7 +2,7 @@
 #
 # Written by: crimsonmane
 # https://github.com/crimsonmane/nightshade
-#
+# revision 20131214-2318
 
 initialSetup(){
   echo "Updating -inxi- in order to provide correct output..."
@@ -54,8 +54,8 @@ echo "Thank you for using Ferret!"
 
 main(){
   clear
-  echo "Ferret Menu"
-  echo "-----------"
+  echo "Ferret Menu (revision 20131214-2318)"
+  echo "------------------------------------"
   select toDo in "sniff sound" "sniff Xorg log" "syslog" "Remove Medibuntu Repo" "Dismiss Ferret"; do
     case $toDo in
       "Dismiss Ferret") dismiss; break;;
