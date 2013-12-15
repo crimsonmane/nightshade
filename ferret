@@ -32,7 +32,7 @@ sniffSound(){
   rm temp.file
 }
 
-sniffXorg(){
+XorgLog(){
   egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit
   shareLink
 }
@@ -59,12 +59,12 @@ main(){
   clear
   echo "Ferret Menu (version 1)"
   echo "------------------------------------"
-  select toDo in "sniff sound" "sniff Xorg log" "syslog" "Remove Medibuntu Repo" "Dismiss Ferret"; do
+  select toDo in "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Dismiss Ferret"; do
     case $toDo in
       "Dismiss Ferret") dismiss; break;;
       "sniff sound") sniffSound; break;;
-      "sniff Xorg log") sniffXorg; break;;
-      "syslog") syslog; break;;
+      "sniff Xorg log") XorgLog; break;;
+      "sniff syslog") syslog; break;;
       "Remove Medibuntu Repo") medibuntu; break;;
     #  *) dismiss;;
     esac
