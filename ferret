@@ -1,0 +1,69 @@
+#! /bin/bash
+
+initialSetup(){
+  echo "Running mandatory update..."
+  if ! dpkg -l | grep pastebinit;then
+      sudo aptitude install pastebinit
+  fi
+  sudo inxi -U
+}
+
+shareLink(){
+  echo "^^ Share this URL with your helper!^^"
+}
+
+sniffSound(){
+  inxi -Sc0 > diag.file
+  inxi -Axc0 >> diag.file
+  if head -1 diag.file | grep "Linux Mint 16";then
+    find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> diag.file
+  else
+    find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> diag.file
+  fi
+  pastebinit diag.file
+  shareLink
+  rm diag.file
+}
+
+sniffXorg(){
+  egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit
+  shareLink
+}
+
+syslog(){
+  { inxi -c0 -FSRzdfulportcm20; egrep -i 'warn|error|critical' /var/log/syslog; } | pastebinit
+  shareLink
+}
+
+medibuntu(){
+  if [ -a /etc/apt/sources.list.d/medibuntu* ];then
+    sudo rm /etc/apt/sources.list.d/medibuntu*
+  fi
+  sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
+  sudo sed -i '/medibuntu/d' /etc/apt/sources.list
+}
+
+dismiss(){
+# re-enable echo
+echo "Thank you for using Ferret!"
+}
+
+main(){
+  clear
+  echo "Ferret Menu"
+  echo "-----------"
+  select toDo in "sniff sound" "sniff Xorg log" "syslog" "Remove Medibuntu Repo" "Dismiss Ferret"; do
+    case $toDo in
+      "Dismiss Ferret") dismiss; break;;
+      "sniff sound") sniffSound; break;;
+      "sniff Xorg log") sniffXorg; break;;
+      "syslog") syslog; break;;
+      "Remove Medibuntu Repo") medibuntu; break;;
+    #  *) dismiss;;
+    esac
+  done
+  echo "Thank you for using Ferret!"
+}
+
+initialSetup
+main
