@@ -22,7 +22,7 @@ shareLink(){
 sniffSound(){
   inxi -Sc0 > temp.file
   inxi -Axc0 >> temp.file
-  if head -1 diag.file | grep "Linux Mint 16";then
+  if head -1 temp.file | grep "Linux Mint 16";then
     find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
   else
     find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
