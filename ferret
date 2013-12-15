@@ -2,7 +2,7 @@
 #
 # Written by: crimsonmane
 # https://github.com/crimsonmane/nightshade
-# revision 20131214-2318
+# revised 20131214 @ 2318
 #
 
 initialSetup(){
@@ -19,7 +19,7 @@ shareLink(){
 
 sniffSound(){
   inxi -Sc0 > temp.file
-  inxi -Axc0 >> femp.file
+  inxi -Axc0 >> temp.file
   if head -1 diag.file | grep "Linux Mint 16";then
     find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
   else
@@ -55,7 +55,7 @@ echo "Thank you for using Ferret!"
 
 main(){
   clear
-  echo "Ferret Menu (revision 20131214-2318)"
+  echo "Ferret Menu (version 1)"
   echo "------------------------------------"
   select toDo in "sniff sound" "sniff Xorg log" "syslog" "Remove Medibuntu Repo" "Dismiss Ferret"; do
     case $toDo in
