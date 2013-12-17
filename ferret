@@ -3,7 +3,7 @@
 ###############################################
 ## Written by: crimsonmane                   ##
 ## https://github.com/crimsonmane/nightshade ##
-## revised 20131116 @ 1621                   ##
+## revised 20131116 @ 1808                   ##
 ###############################################
 
 initialSetup(){
@@ -342,6 +342,6 @@ main(){
 }
 
 initialSetup
-title1="Ferret (version 2)"
+title1="Ferret (version 3)"
 title2="------------------"
 main
