@@ -17,6 +17,10 @@ initialSetup(){
   sudo inxi -U
 }
 
+updateFerret(){
+  xdg-open https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret
+}
+
 shareLink(){
   echo "^^ Share this URL with your helper!^^"
 }
