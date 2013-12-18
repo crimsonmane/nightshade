@@ -3,7 +3,7 @@
 ###############################################
 ## Written by: crimsonmane                   ##
 ## https://github.com/crimsonmane/nightshade ##
-## revised 20131118 @ 1743                   ##
+## revised 20131116 @ 1826                   ##
 ###############################################
 
 initialSetup(){
@@ -255,7 +255,7 @@ audio(){
 	break;;
       "Same as #2 but that fix didn't work.")
 	echo "Section not written."
-	break;
+	break;;
       "Nothing")
 	break;;
     esac
