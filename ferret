@@ -3,7 +3,7 @@
 ###############################################
 ## Written by: crimsonmane                   ##
 ## https://github.com/crimsonmane/nightshade ##
-## revised 20131116 @ 1808                   ##
+## revised 20131118 @ 1743                   ##
 ###############################################
 
 initialSetup(){
@@ -12,7 +12,7 @@ initialSetup(){
   tput sgr0 #Reset text
   if ! dpkg -l | grep pastebinit
   then
-      sudo aptitude install pastebinit
+    sudo aptitude install pastebinit
   fi
   sudo inxi -U
 }
@@ -58,267 +58,236 @@ medibuntu(){
 }
 
 ps3ms(){
-  if ! dpkg -l | grep ps3mediaserver
-  then
-    echo "Do you want to INSTALL ps3mediaserver?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo apt-add-repository ppa:happy-neko/ps3mediaserver
-	  sudo aptitude update
-	  sudo aptitude install ps3mediaserver
+  clear
+  echo "$title1 - PS3 Media Server"
+  echo "$title2"
+  select toDo in "Yes" "No"
+  do
+    case $toDo in
+      "Install")
+	sudo apt-add-repository ppa:happy-neko/ps3mediaserver
+	sudo aptitude update
+	sudo aptitude install ps3mediaserver
 	break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE ps3mediaserver?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y ps3mediaserver
-	  sudo apt-add-repository --remove ppa:happy-neko/ps3mediaserver
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+      "Remove")
+	sudo aptitude purge -y ps3mediaserver
+	sudo apt-add-repository --remove ppa:happy-neko/ps3mediaserver
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 plex(){
-  if ! dpkg -l | grep plexmediaserver
-  then
-    echo "Do you want to INSTALL plexmediaserver?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  firefox http://www.plexapp.com/getplex/
+  clear
+  echo "$title1 - Plex Media Server"
+  echo "$title2"
+  select toDo in "Install" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install")
+	firefox http://www.plexapp.com/getplex/
 	break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE plexmediaserver?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y plexmediaserver
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+      "Remove")
+	sudo aptitude purge -y plexmediaserver
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 netflixDesktop(){
-  if ! dpkg -l | grep netflix-desktop
-  then
-    echo "Do you want to INSTALL netflix-desktop?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  if ! dpkg -l | grep pipelight-multi
-	  then
-	    sudo apt-add-repository ppa:ehoover/compholio
-	  fi
-	  sudo aptitude update
-	  sudo aptitude install -y netflix-desktop
+  clear
+  echo "$title1 - netflix-desktop"
+  echo "$title2"
+  select toDo in "Install" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install")
+	if ! dpkg -l | grep pipelight-multi
+	then
+	  sudo apt-add-repository ppa:ehoover/compholio
+	fi
+	sudo aptitude update
+	sudo aptitude install -y netflix-desktop
 	break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE netflix-desktop?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y netflix-desktop
-	  if ! dpkg -l | grep pipelight-multi
-	  then
-	    sudo apt-add-repository --remove ppa:ehoover/compholio
-	  fi
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+      "Remove")
+	sudo aptitude purge -y netflix-desktop
+	if ! dpkg -l | grep pipelight-multi
+	then
+	  sudo apt-add-repository --remove ppa:ehoover/compholio
+	fi
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 pipelight(){
-  if ! dpkg -l | grep pipelight-multi
-  then
-    echo "Do you want to INSTALL Netflix/Pipelight?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  if ! dpkg -l | grep pipelight
-	  then
-	    sudo aptitude purge pipelight
-	  fi
-	  if ! dpkg -l | grep netflix-desktop
-	  then
-	    sudo apt-add-repository ppa:ehoover/compholio
-	  fi
-	  sudo apt-add-repository ppa:mqchael/pipelight
-	  sudo aptitude update
-	  sudo aptitude install pipelight-multi
-	  sudo pipelight-plugin --enable silverlight
-	  rm -rf ~/.wine-pipelight
-	  echo "*******************************************************************"
-	  echo "** Please install both firefox addons that are about to pop up.  **"
-	  echo "** Sometimes UAC doesn't work and you need to use the Overrider. **"
-	  echo "** It's up to you to play with these to get netflix.com to work. **"
-	  echo "** If your browser is open, please close it now.                 **"
-	  echo "** If firefox is not your desired browser, it's up to you to     **"
-	  echo "**                                get these addons yourself.     **"
-	  echo "*******************************************************************"
-	  read -n1 -r -p "Press any key to continue..."
-	  firefox https://addons.mozilla.org/en-US/firefox/addon/user-agent-overrider/ https://addons.mozilla.org/en-us/firefox/addon/uacontrol/
-	  break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE Netflix/Pipelight?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y pipelight-multi
-	  sudo apt-add-repository --remove ppa:mqchael/pipelight
-	  if ! dpkg -l | grep netflix-desktop
-	  then
-	    sudo apt-add-repository --remove ppa:ehoover/compholio
-	  fi
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+  clear
+  echo "$title1 - Netflix/Pipelight"
+  echo "$title2"
+  select toDo in "Install" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install")
+	if ! dpkg -l | grep pipelight
+	then
+	  sudo aptitude purge pipelight
+	fi
+	if ! dpkg -l | grep netflix-desktop
+	then
+	  sudo apt-add-repository ppa:ehoover/compholio
+	fi
+	sudo apt-add-repository ppa:mqchael/pipelight
+	sudo aptitude update
+	sudo aptitude install pipelight-multi
+	sudo pipelight-plugin --enable silverlight
+	rm -rf ~/.wine-pipelight
+	echo "*****************************************************************"
+	echo "* Please install both firefox addons that are about to pop up.  *"
+	echo "* Sometimes UAC doesn't work and you need to use the Overrider. *"
+	echo "* It's up to you to play with these to get netflix.com to work. *"
+	echo "* If your browser is open, please close it now.                 *"
+	echo "* If firefox is not your desired browser, it's up to you to     *"
+	echo "*                                get these addons yourself.     *"
+	echo "*****************************************************************"
+	read -n1 -r -p "Press any key to continue..."
+	firefox https://addons.mozilla.org/en-US/firefox/addon/user-agent-overrider/ https://addons.mozilla.org/en-us/firefox/addon/uacontrol/
+	break;;
+      "Remove")
+	sudo aptitude purge -y pipelight-multi
+	sudo apt-add-repository --remove ppa:mqchael/pipelight
+	if ! dpkg -l | grep netflix-desktop
+	then
+	  sudo apt-add-repository --remove ppa:ehoover/compholio
+	fi
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 handbrake(){
-  if ! dpkg -l | grep handbrake
-  then
-    echo "Do you want to INSTALL handbrake?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo add-apt-repository ppa:stebbins/handbrake-releases 
-	  sudo aptitude update
-	  sudo aptitude install -y handbrake-gtk handbrake-cli
-	  break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE handbrake?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y handbrake-gtk handbrake-cli
-	  sudo apt-add-repository --remove ppa:stebbins/handbrake-releases
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+  clear   echo "$title1 - Handbrake"
+  echo "$title2"
+  select toDo in "Install" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install")
+	sudo add-apt-repository ppa:stebbins/handbrake-releases
+	sudo aptitude update
+	sudo aptitude install -y handbrake-gtk handbrake-cli
+	break;;
+      "Remove")
+	sudo aptitude purge -y handbrake-gtk handbrake-cli
+	sudo apt-add-repository --remove ppa:stebbins/handbrake-releases
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 chrome(){
-  if ! dpkg -l | grep google-chrome
-  then
-    echo "Do you want to INSTALL google-chrome-stable?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-	  sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/ferret-chrome.list'
-	  sudo aptitude update
-	  sudo aptitude install -y google-chrome-stable
+  clear
+  echo "$title1 - Google Chrome"
+  echo "$title2"
+  select toDo in "Install" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install")
+	wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+	sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/ferret-chrome.list'
+	sudo aptitude update
+	sudo aptitude install -y google-chrome-stable
 	break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE google-chrome-stable?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y google-chrome-stable
-	  sudo rm /etc/apt/sources.list.d/ferret-chrome.list
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+      "Remove")
+	sudo aptitude purge -y google-chrome-stable
+	sudo rm /etc/apt/sources.list.d/ferret-chrome.list
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
 }
 
 bootRepair(){
-  if ! dpkg -l | grep boot-repair
-  then
-    echo "Do you want to INSTALL boot-repair?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo apt-add-repository ppa:yannubuntu/boot-repair
-	  sudo aptitude update
-	  sudo aptitude install -y boot-repair
-	  boot-repair &
+  clear
+  echo "$title1 - Boot Repair"
+  echo "$title2"
+  select toDo in "Install & Launch" "Remove" "Nothing"
+  do
+    case $toDo in
+      "Install & Launch")
+	sudo apt-add-repository ppa:yannubuntu/boot-repair
+	sudo aptitude update
+	sudo aptitude install -y boot-repair
+	boot-repair &
 	break;;
-	"No") break;;
-      esac
-    done
-  else
-    echo "Do you want to REMOVE boot-repair?"
-    select toDo in "Yes" "No"
-    do
-      case $toDo in
-	"Yes")
-	  sudo aptitude purge -y boot-repair
-	  sudo apt-add-repository --remove ppa:yannubuntu/boot-repair
-	  break;;
-	"No")
-	  break;;
-      esac
-    done
-  fi
+      "Remove")
+	sudo aptitude purge -y boot-repair
+	sudo apt-add-repository --remove ppa:yannubuntu/boot-repair
+	break;;
+      "Nothing")
+	break;;
+    esac
+  done
+}
+
+
+audio(){
+  clear
+  echo "$title1 - Troubleshoot Audio"
+  echo "$title2"
+  select toDo in "Nothing" "The only audio device shown is Dummy Output"
+  do
+    case $toDo in
+      "The only audio device shown is Dummy Output")
+	sudo aptitude purge --safe-resolver alsa-base pulseaudio
+	sudo aptitude install -y alsa-base pulseaudio
+	sudo alsa force-reload
+	sudo shutdown -r now
+	break;;
+      "Same as #2 but that fix didn't work.")
+	echo "Section not written."
+	break;
+      "Nothing")
+	break;;
+    esac
+  done
+}
+
+propDrivers(){
+  mintVersion=$(inxi -S)
+  case $mintVersion in
+    *"Mint 13"*) jockey-gtk; break;;
+    *"Mint 14"*) software-properties-gtk; break;;
+    *"Mint 15"*) software-properties-gtk; break;;
+    *"Mint 16"*) driver-manager; break;;
+  esac
 }
 
 popularSoftware(){
   clear
   echo "$title1 - Software Menu"
-    echo "$title2"
-    select toDo in "Leave Ferret" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
-    do
-      case $toDo in
-	"Leave Ferret") toDo=-1; break;;
-	"Plex Media Server") plex; break;;
-	"PS3 Media Server") ps3ms; break;;
-	"Netflix-Desktop") netflixDesktop; break;;
-	"Netflix/Pipelight") pipelight; break;;
-	"Google Chrome") chrome; break;;
-	"Handbrake") handbrake; break;;
-      esac
-    done
+  echo "$title2"
+  select toDo in "Leave Ferret" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
+  do
+    case $toDo in
+      "Leave Ferret") toDo=-1; break;;
+      "Plex Media Server") plex; break;;
+      "PS3 Media Server") ps3ms; break;;
+      "Netflix-Desktop") netflixDesktop; break;;
+      "Netflix/Pipelight") pipelight; break;;
+      "Google Chrome") chrome; break;;
+      "Handbrake") handbrake; break;;
+    esac
+  done
 }
 
 main(){
@@ -328,12 +297,14 @@ main(){
     clear
     echo "$title1 - Main Menu"
     echo "$title2"
-    select toDo in "Leave Ferret" "Update Ferret" "Popular Software" "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Boot Repair"
+    select toDo in "Leave Ferret" "Update Ferret" "Popular Software" "Check for Drivers" "Troubleshoot Audio" "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Boot Repair"
     do
       case $toDo in
 	"Leave Ferret") toDo=-1; break;;
 	"Update Ferret") updateFerret; break;;
 	"Popular Software") popularSoftware; break;;
+	"Check for Drivers") propDrivers; break;;
+	"Troubleshoot Audio") audio; break;;
 	"sniff sound") sniffSound; break;;
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
