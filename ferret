@@ -3,16 +3,11 @@
 #####################################
 # Written by: crimsonmane           #
 # github.com/crimsonmane/nightshade #
-#         revised 20131224          #
+#         revised 20131225          #
 #####################################
 
 initialSetup(){
-  tput setaf 1 #Red text
-  echo "Checking if -pastebinit- is installed..."
-  echo "Updating -inxi- in order to provide consistent output..."
-  echo "Enter password to continue (because sudo is needed) or CTRL+C to skip"
-  echo "(-inxi- updates often and so should you)..."
-  tput sgr0 #Reset text
+  notice "Checking if -pastebinit- is installed..." "Updating -inxi- in order to provide consistent output..." "Enter password to continue (because sudo is needed) or CTRL+C to skip" "(-inxi- updates often and so should you)..."
   if ! dpkg -l | grep pastebinit
   then
     sudo aptitude install pastebinit
@@ -21,12 +16,23 @@ initialSetup(){
   sudo -k
 }
 
+title(){
+  printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"
+
+}
+
 updateFerret(){
   xdg-open https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret
 }
 
 shareLink(){
-  echo "^^ Share this URL with your helper!^^"
+  text=" Share this URL with your helper! "
+  line="--------------------------------------"
+  printf '\nData collection in progress - please wait...\n'
+  printf '%s\nvv%svv\n%s\n' "$line" "$text" "$line"
+  sleep 2
+  eval "$1"
+  printf '%s\n^^%s^^\n%s\n' "$line" "$text" "$line"
 }
 
 sniffSound(){
@@ -40,46 +46,38 @@ sniffSound(){
       find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
       break;;
   esac
-  pastebinit temp.file
-  shareLink
+  shareLink 'pastebinit temp.file'
   rm temp.file
 }
 
 XorgLog(){
-  egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit
-  shareLink
+  shareLink "egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit"
 }
 
 syslog(){
-  { inxi -c0 -FSRzdfulportcm20; egrep -i 'warn|error|critical' /var/log/syslog; } | pastebinit
-  shareLink
+  shareLink "{ inxi -c0 -FSRzdfulportcm20; egrep -i 'warn|error|critical' /var/log/syslog; } | pastebinit"
 }
 
 medibuntu(){
   if inxi -r | grep -i medibuntu
   then
-    echo
-    echo "Medibuntu found in sources, causing update issues. Confirm removal by entering password (because sudo is needed), or CTRL+C to skip."
-    echo
+    notice "Medibuntu found in sources, causing update issues. Confirm removal by entering password (because sudo is needed), or CTRL+C to skip."
     if [ -a /etc/apt/sources.list.d/medibuntu* ]
     then
       sudo rm /etc/apt/sources.list.d/medibuntu*
     fi
       sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
       sudo sed -i '/medibuntu/d' /etc/apt/sources.list
-      echo
-      echo "Medibuntu has been removed from sources. Confirm by running Update Manager."
-      echo
+      notice "Medibuntu has been removed from sources. Confirm by running Update Manager."
     else
-    echo "Medibuntu not found on this system. That's good!"
+    notice "Medibuntu not found on this system. That's good!"
   fi
   sudo -k
 }
 
 ps3ms(){
   #clear
-  echo "$title1 - PS3 Media Server"
-  echo "$title2"
+  title "PS3 Media Server"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -100,8 +98,7 @@ ps3ms(){
 
 plex(){
   #clear
-  echo "$title1 - Plex Media Server"
-  echo "$title2"
+  title "Plex Media Server"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -119,8 +116,7 @@ plex(){
 
 netflixDesktop(){
   #clear
-  echo "$title1 - netflix-desktop"
-  echo "$title2"
+  title "netflix-desktop"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -147,8 +143,7 @@ netflixDesktop(){
 
 pipelight(){
   #clear
-  echo "$title1 - Netflix/Pipelight"
-  echo "$title2"
+  title "Netflix/Pipelight"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -166,14 +161,7 @@ pipelight(){
 	sudo aptitude install pipelight-multi
 	sudo pipelight-plugin --enable silverlight
 	rm -rf ~/.wine-pipelight
-	echo "*****************************************************************"
-	echo "* Please install both firefox addons that are about to pop up.  *"
-	echo "* Sometimes UAC doesn't work and you need to use the Overrider. *"
-	echo "* It's up to you to play with these to get netflix.com to work. *"
-	echo "* If your browser is open, please close it now.                 *"
-	echo "* If firefox is not your desired browser, it's up to you to     *"
-	echo "*                                get these addons yourself.     *"
-	echo "*****************************************************************"
+	notice "*****************************************************************" "* Please install both firefox addons that are about to pop up.  *" "* Sometimes UAC doesn't work and you need to use the Overrider. *" "* It's up to you to play with these to get netflix.com to work. *" "* If your browser is open, please close it now.                 *" "* If firefox is not your desired browser, it's up to you to     *" "*                                get these addons yourself.     *" "*****************************************************************"
 	read -n1 -r -p "Press any key to continue..."
 	firefox https://addons.mozilla.org/en-US/firefox/addon/user-agent-overrider/ https://addons.mozilla.org/en-us/firefox/addon/uacontrol/
 	break;;
@@ -192,8 +180,8 @@ pipelight(){
 }
 
 handbrake(){
-  #clear   echo "$title1 - Handbrake"
-  echo "$title2"
+  #clear
+  title "Handbrake"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -214,8 +202,7 @@ handbrake(){
 
 chrome(){
   #clear
-  echo "$title1 - Google Chrome"
-  echo "$title2"
+  title "Google Chrome"
   select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -237,8 +224,7 @@ chrome(){
 
 bootRepair(){
   #clear
-  echo "$title1 - Boot Repair"
-  echo "$title2"
+  title "Boot Repair"
   select toDo in "Install & Launch" "Remove" "Do Nothing"
   do
     case $toDo in
@@ -262,13 +248,12 @@ bootRepair(){
 }
 
 video(){
-  echo "Section not yet written."
+  notice "Section not yet written."
 }
 
 audio(){
   #clear
-  echo "$title1 - Troubleshoot Audio"
-  echo "$title2"
+  title "Troubleshoot Audio"
   select toDo in "Do Nothing" "The only audio device shown is Dummy Output"
   do
     case $toDo in
@@ -276,10 +261,10 @@ audio(){
 	sudo aptitude purge --safe-resolver alsa-base pulseaudio
 	sudo aptitude install -y alsa-base pulseaudio
 	sudo alsa force-reload
-	echo "Changes will take effect when you reboot. Please reboot."
+	notice "Changes will take effect when you reboot. Please reboot."
 	break;;
       "Same as #2 but that fix didn't work.")
-	echo "Section not written."
+	notice "Section not written."
 	break;;
       *)
 	break;;
@@ -293,7 +278,7 @@ wifi(){
       sudo aptitude install firmware-b43-installer b43-fwcutter
       break;;
     *)
-      echo "No issues detected."
+      notice "No wifi issues detected."
       break;;
   esac
 }
@@ -310,10 +295,15 @@ propDrivers(){
   esac
 }
 
+packageSearch(){
+  notice "If you did not allow the routine updates when Ferret started, then these results are not going to be ideal. If that is the case, simply run Ferret again and allow updates."
+  read -r -p "Type the package name you'd like to search: " pkg
+  shareLink '{ echo "------installed------"; aptitude search -F "%p %V %v" "$pkg" | grep -iv none; echo "++++not installed++++"; aptitude search -F "%p %V %v" "$pkg" | grep -i none; } | pastebinit'
+}
+
 popularSoftware(){
   #clear
-  echo "$title1 - Software Menu"
-  echo "$title2"
+  title "Software Menu"
   select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
   do
     case $toDo in
@@ -333,11 +323,8 @@ main(){
 #  while [ $toDo -ne -1 ]
 #  do
     #clear
-    echo "Note: Menu item to remove Medibuntu repo from sources has been deleted, as this condition is identified and resolved automatically when Ferret loads."
-    echo
-    echo "$title1 - Main Menu"
-    echo "$title2"
-    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Open Drivers Dialogue" "Boot Repair"
+    title "Main Menu"
+    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Open Drivers Dialogue" "Boot Repair"
     do
       case $toDo in
 	"Do Nothing") toDo=-1; break;;
@@ -349,23 +336,29 @@ main(){
 	"sniff sound") sniffSound; break;;
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
+	"Package Search") packageSearch; break;;
 	"Open Drivers Dialogue") propDrivers; break;;
 	"Boot Repair") bootRepair; break;;
       esac
     done
 #  done
-  echo
-  echo "Please 'like' my company page: https://facebook.com/nightshadePC"
-  echo
-  echo "Report bugs, errors, unexpected behavior, and requests:"
-  echo "https://github.com/crimsonmane/nightshade/issues"
-  echo
-  echo "Thank you for using $title1!"
+  notice "Please 'like' my company page: https://facebook.com/nightshadePC"
+  notice "Report bugs, errors, unexpected behavior, and requests:" "https://github.com/crimsonmane/nightshade/issues"
+  printf 'Thank you for using %s\n' "$title1!"
 }
 
-medibuntu
+notice(){
+  tput setaf 1 #Red text
+  printf '\n'
+  printf '%s\n' "$@"
+  printf '\n'
+  tput sgr0 #Reset text
+}
+
 initialSetup
-title1="Ferret (version 4)"
+medibuntu
+wifi
+title1="Ferret (version 5)"
 title2="------------------"
 mintVersion=$(inxi -S)
 main
