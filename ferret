@@ -4,7 +4,7 @@
 # Written by: crimsonmane           #
 # github.com/crimsonmane/nightshade #
 #         revised 20131224          #
-######################################
+#####################################
 
 initialSetup(){
   tput setaf 1 #Red text
@@ -76,7 +76,7 @@ ps3ms(){
 	sudo aptitude purge -y ps3mediaserver
 	sudo apt-add-repository --remove ppa:happy-neko/ps3mediaserver
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -95,7 +95,7 @@ plex(){
       "Remove")
 	sudo aptitude purge -y plexmediaserver
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -123,7 +123,7 @@ netflixDesktop(){
 	  sudo apt-add-repository --remove ppa:ehoover/compholio
 	fi
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -169,7 +169,7 @@ pipelight(){
 	  sudo apt-add-repository --remove ppa:ehoover/compholio
 	fi
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -190,7 +190,7 @@ handbrake(){
 	sudo aptitude purge -y handbrake-gtk handbrake-cli
 	sudo apt-add-repository --remove ppa:stebbins/handbrake-releases
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -213,7 +213,7 @@ chrome(){
 	sudo aptitude purge -y google-chrome-stable
 	sudo rm /etc/apt/sources.list.d/ferret-chrome.list
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -227,16 +227,19 @@ bootRepair(){
   do
     case $toDo in
       "Install & Launch")
-	sudo apt-add-repository ppa:yannubuntu/boot-repair
-	sudo aptitude update
-	sudo aptitude install -y boot-repair
+	if ! dpkg -l | grep boot-repair
+	then
+	  sudo apt-add-repository ppa:yannubuntu/boot-repair
+	  sudo aptitude update
+	  sudo aptitude install -y boot-repair
+	fi
 	boot-repair &
 	break;;
       "Remove")
 	sudo aptitude purge -y boot-repair
 	sudo apt-add-repository --remove ppa:yannubuntu/boot-repair
 	break;;
-      "Do Nothing")
+      *)
 	break;;
     esac
   done
@@ -262,7 +265,7 @@ audio(){
       "Same as #2 but that fix didn't work.")
 	echo "Section not written."
 	break;;
-      " Do Nothing")
+      *)
 	break;;
     esac
   done
