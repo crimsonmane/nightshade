@@ -7,6 +7,7 @@
 #####################################
 
 initialSetup(){
+  medibuntu
   tput setaf 1 #Red text
   echo "Checking if -pastebinit- is installed... Updating -inxi- in order to provide consistent output... Enter password to continue or CTRL+C to skip (-inxi- updates often and so should you)..."
   tput sgr0 #Reset text
@@ -52,12 +53,23 @@ syslog(){
 }
 
 medibuntu(){
-  if [ -a /etc/apt/sources.list.d/medibuntu* ]
+  if inxi -r | grep -i medibuntu
   then
-    sudo rm /etc/apt/sources.list.d/medibuntu*
+    echo
+    echo "Medibuntu found in sources, causing update issues. Confirm removal by entering password (because sudo is needed), or CTRL+C to skip."
+    echo
+    if [ -a /etc/apt/sources.list.d/medibuntu* ]
+    then
+      sudo rm /etc/apt/sources.list.d/medibuntu*
+    fi
+      sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
+      sudo sed -i '/medibuntu/d' /etc/apt/sources.list
+      echo
+      echo "Medibuntu has been removed from sources. Confirm by running Update Manager."
+      echo
+    else
+    echo "Medibuntu not found on this system. That's good!"
   fi
-  sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
-  sudo sed -i '/medibuntu/d' /etc/apt/sources.list
 }
 
 ps3ms(){
@@ -317,9 +329,11 @@ main(){
 #  while [ $toDo -ne -1 ]
 #  do
     clear
+    echo "Note: Menu item to remove Medibuntu repo from sources has been deleted, as this condition is identified and resolved automatically when Ferret loads."
+    echo
     echo "$title1 - Main Menu"
     echo "$title2"
-    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Open Drivers Dialogue" "Boot Repair"
+    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Open Drivers Dialogue" "Boot Repair"
     do
       case $toDo in
 	"Do Nothing") toDo=-1; break;;
@@ -331,19 +345,22 @@ main(){
 	"sniff sound") sniffSound; break;;
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
-	"Remove Medibuntu Repo") medibuntu; break;;
 	"Open Drivers Dialogue") propDrivers; break;;
 	"Boot Repair") bootRepair; break;;
       esac
     done
 #  done
-  echo "Please 'like' my company page:"
-  echo "https://facebook.com/nightshadepc"
+  echo
+  echo "Please 'like' my company page: https://facebook.com/nightshadePC"
+  echo
+  echo "Report bugs, errors, unexpected behavior, and requests:"
+  echo "https://github.com/crimsonmane/nightshade/issues"
+  echo
   echo "Thank you for using $title1!"
 }
 
 initialSetup
-title1="Ferret (version 3)"
+title1="Ferret (version 4)"
 title2="------------------"
 mintVersion=$(inxi -S)
 main
