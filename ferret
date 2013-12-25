@@ -18,7 +18,6 @@ initialSetup(){
 
 title(){
   printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"
-
 }
 
 updateFerret(){
