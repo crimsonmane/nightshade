@@ -278,7 +278,7 @@ wifi(){
       break;;
     *)
       notice "No wifi issues detected."
-      break;;
+#      break;;
   esac
 }
 
@@ -323,7 +323,7 @@ main(){
 #  do
     #clear
     title "Main Menu"
-    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Open Drivers Dialogue" "Boot Repair"
+    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Launch Drivers Dialogue" "Boot Repair"
     do
       case $toDo in
 	"Do Nothing") toDo=-1; break;;
@@ -336,7 +336,7 @@ main(){
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
 	"Package Search") packageSearch; break;;
-	"Open Drivers Dialogue") propDrivers; break;;
+	"Launch Drivers Dialogue") propDrivers; break;;
 	"Boot Repair") bootRepair; break;;
       esac
     done
