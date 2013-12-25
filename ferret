@@ -1,10 +1,10 @@
 #! /bin/bash
 
-###############################################
-## Written by: crimsonmane                   ##
-## https://github.com/crimsonmane/nightshade ##
-## revised 20131116 @ 1826                   ##
-###############################################
+#####################################
+# Written by: crimsonmane           #
+# github.com/crimsonmane/nightshade #
+#         revised 20131224          #
+######################################
 
 initialSetup(){
   tput setaf 1 #Red text
@@ -28,11 +28,14 @@ shareLink(){
 sniffSound(){
   inxi -Sc0 > temp.file
   inxi -Axc0 >> temp.file
-  if head -1 temp.file | grep "Linux Mint 16";then
-    find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
-  else
-    find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
-  fi
+  case $mintVersion in
+    *"Mint 16"*)
+      find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
+      break;;
+    *)
+      find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
+      break;;
+  esac
   pastebinit temp.file
   shareLink
   rm temp.file
@@ -61,7 +64,7 @@ ps3ms(){
   clear
   echo "$title1 - PS3 Media Server"
   echo "$title2"
-  select toDo in "Yes" "No"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -73,7 +76,7 @@ ps3ms(){
 	sudo aptitude purge -y ps3mediaserver
 	sudo apt-add-repository --remove ppa:happy-neko/ps3mediaserver
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -83,7 +86,7 @@ plex(){
   clear
   echo "$title1 - Plex Media Server"
   echo "$title2"
-  select toDo in "Install" "Remove" "Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -92,7 +95,7 @@ plex(){
       "Remove")
 	sudo aptitude purge -y plexmediaserver
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -102,7 +105,7 @@ netflixDesktop(){
   clear
   echo "$title1 - netflix-desktop"
   echo "$title2"
-  select toDo in "Install" "Remove" "Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -120,7 +123,7 @@ netflixDesktop(){
 	  sudo apt-add-repository --remove ppa:ehoover/compholio
 	fi
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -130,7 +133,7 @@ pipelight(){
   clear
   echo "$title1 - Netflix/Pipelight"
   echo "$title2"
-  select toDo in "Install" "Remove" "Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -166,7 +169,7 @@ pipelight(){
 	  sudo apt-add-repository --remove ppa:ehoover/compholio
 	fi
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -175,7 +178,7 @@ pipelight(){
 handbrake(){
   clear   echo "$title1 - Handbrake"
   echo "$title2"
-  select toDo in "Install" "Remove" "Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -187,7 +190,7 @@ handbrake(){
 	sudo aptitude purge -y handbrake-gtk handbrake-cli
 	sudo apt-add-repository --remove ppa:stebbins/handbrake-releases
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -197,7 +200,7 @@ chrome(){
   clear
   echo "$title1 - Google Chrome"
   echo "$title2"
-  select toDo in "Install" "Remove" "Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
@@ -210,7 +213,7 @@ chrome(){
 	sudo aptitude purge -y google-chrome-stable
 	sudo rm /etc/apt/sources.list.d/ferret-chrome.list
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
@@ -220,7 +223,7 @@ bootRepair(){
   clear
   echo "$title1 - Boot Repair"
   echo "$title2"
-  select toDo in "Install & Launch" "Remove" "Nothing"
+  select toDo in "Install & Launch" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install & Launch")
@@ -233,38 +236,54 @@ bootRepair(){
 	sudo aptitude purge -y boot-repair
 	sudo apt-add-repository --remove ppa:yannubuntu/boot-repair
 	break;;
-      "Nothing")
+      "Do Nothing")
 	break;;
     esac
   done
 }
 
+video(){
+  echo "Section not yet written."
+}
 
 audio(){
   clear
   echo "$title1 - Troubleshoot Audio"
   echo "$title2"
-  select toDo in "Nothing" "The only audio device shown is Dummy Output"
+  select toDo in "Do Nothing" "The only audio device shown is Dummy Output"
   do
     case $toDo in
       "The only audio device shown is Dummy Output")
 	sudo aptitude purge --safe-resolver alsa-base pulseaudio
 	sudo aptitude install -y alsa-base pulseaudio
 	sudo alsa force-reload
-	sudo shutdown -r now
+	echo "Changes will take effect when you reboot. Please reboot."
 	break;;
       "Same as #2 but that fix didn't work.")
 	echo "Section not written."
 	break;;
-      "Nothing")
+      " Do Nothing")
 	break;;
     esac
   done
 }
 
+wifi(){
+  case $(inxi -Nxx) in
+    *"BCM43"*)
+      sudo aptitude install firmware-b43-installer b43-fwcutter
+      break;;
+    *)
+      echo "No issues detected."
+      break;;
+  esac
+}
+
 propDrivers(){
-  mintVersion=$(inxi -S)
   case $mintVersion in
+    *"KDE"*"Mint 13"*) jockey-kde; break;;
+    *"KDE"*"Mint 14"*) software-properties-kde; break;;
+    *"KDE"*"Mint 15"*) software-properties-kde; break;;
     *"Mint 13"*) jockey-gtk; break;;
     *"Mint 14"*) software-properties-gtk; break;;
     *"Mint 15"*) software-properties-gtk; break;;
@@ -276,10 +295,10 @@ popularSoftware(){
   clear
   echo "$title1 - Software Menu"
   echo "$title2"
-  select toDo in "Leave Ferret" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
+  select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
   do
     case $toDo in
-      "Leave Ferret") toDo=-1; break;;
+      "Do Nothing") toDo=-1; break;;
       "Plex Media Server") plex; break;;
       "PS3 Media Server") ps3ms; break;;
       "Netflix-Desktop") netflixDesktop; break;;
@@ -297,26 +316,31 @@ main(){
     clear
     echo "$title1 - Main Menu"
     echo "$title2"
-    select toDo in "Leave Ferret" "Update Ferret" "Popular Software" "Check for Drivers" "Troubleshoot Audio" "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Boot Repair"
+    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Remove Medibuntu Repo" "Open Drivers Dialogue" "Boot Repair"
     do
       case $toDo in
-	"Leave Ferret") toDo=-1; break;;
+	"Do Nothing") toDo=-1; break;;
 	"Update Ferret") updateFerret; break;;
 	"Popular Software") popularSoftware; break;;
-	"Check for Drivers") propDrivers; break;;
 	"Troubleshoot Audio") audio; break;;
+	"Troubleshoot Video") video; break;;
+	"Troubleshoot WiFi") wifi; break;;
 	"sniff sound") sniffSound; break;;
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
 	"Remove Medibuntu Repo") medibuntu; break;;
+	"Open Drivers Dialogue") propDrivers; break;;
 	"Boot Repair") bootRepair; break;;
       esac
     done
 #  done
+  echo "Please 'like' my company page:"
+  echo "https://facebook.com/nightshadepc"
   echo "Thank you for using $title1!"
 }
 
 initialSetup
 title1="Ferret (version 3)"
 title2="------------------"
+mintVersion=$(inxi -S)
 main
