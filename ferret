@@ -7,15 +7,18 @@
 #####################################
 
 initialSetup(){
-  medibuntu
   tput setaf 1 #Red text
-  echo "Checking if -pastebinit- is installed... Updating -inxi- in order to provide consistent output... Enter password to continue or CTRL+C to skip (-inxi- updates often and so should you)..."
+  echo "Checking if -pastebinit- is installed..."
+  echo "Updating -inxi- in order to provide consistent output..."
+  echo "Enter password to continue (because sudo is needed) or CTRL+C to skip"
+  echo "(-inxi- updates often and so should you)..."
   tput sgr0 #Reset text
   if ! dpkg -l | grep pastebinit
   then
     sudo aptitude install pastebinit
   fi
   sudo inxi -U
+  sudo -k
 }
 
 updateFerret(){
@@ -70,10 +73,11 @@ medibuntu(){
     else
     echo "Medibuntu not found on this system. That's good!"
   fi
+  sudo -k
 }
 
 ps3ms(){
-  clear
+  #clear
   echo "$title1 - PS3 Media Server"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
@@ -95,7 +99,7 @@ ps3ms(){
 }
 
 plex(){
-  clear
+  #clear
   echo "$title1 - Plex Media Server"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
@@ -114,7 +118,7 @@ plex(){
 }
 
 netflixDesktop(){
-  clear
+  #clear
   echo "$title1 - netflix-desktop"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
@@ -142,7 +146,7 @@ netflixDesktop(){
 }
 
 pipelight(){
-  clear
+  #clear
   echo "$title1 - Netflix/Pipelight"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
@@ -188,7 +192,7 @@ pipelight(){
 }
 
 handbrake(){
-  clear   echo "$title1 - Handbrake"
+  #clear   echo "$title1 - Handbrake"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
   do
@@ -209,7 +213,7 @@ handbrake(){
 }
 
 chrome(){
-  clear
+  #clear
   echo "$title1 - Google Chrome"
   echo "$title2"
   select toDo in "Install" "Remove" "Do Nothing"
@@ -232,7 +236,7 @@ chrome(){
 }
 
 bootRepair(){
-  clear
+  #clear
   echo "$title1 - Boot Repair"
   echo "$title2"
   select toDo in "Install & Launch" "Remove" "Do Nothing"
@@ -262,7 +266,7 @@ video(){
 }
 
 audio(){
-  clear
+  #clear
   echo "$title1 - Troubleshoot Audio"
   echo "$title2"
   select toDo in "Do Nothing" "The only audio device shown is Dummy Output"
@@ -307,7 +311,7 @@ propDrivers(){
 }
 
 popularSoftware(){
-  clear
+  #clear
   echo "$title1 - Software Menu"
   echo "$title2"
   select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
@@ -328,7 +332,7 @@ main(){
 #  toDo=0
 #  while [ $toDo -ne -1 ]
 #  do
-    clear
+    #clear
     echo "Note: Menu item to remove Medibuntu repo from sources has been deleted, as this condition is identified and resolved automatically when Ferret loads."
     echo
     echo "$title1 - Main Menu"
@@ -359,8 +363,10 @@ main(){
   echo "Thank you for using $title1!"
 }
 
+medibuntu
 initialSetup
 title1="Ferret (version 4)"
 title2="------------------"
 mintVersion=$(inxi -S)
 main
+sudo -k
