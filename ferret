@@ -21,7 +21,8 @@ title(){
 }
 
 updateFerret(){
-  xdg-open https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret
+  notice "To update ferret, simply re-download it, replacing the one you have. Follow this link:" "https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret" ""
+  sleep 3
 }
 
 shareLink(){
