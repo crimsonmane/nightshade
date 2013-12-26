@@ -40,12 +40,12 @@ sniffSound(){
   case $mintVersion in
     *"Mint 16"*)
       find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
-      break;;
+      ;;
     *)
       find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
-      break;;
+      ;;
   esac
-  shareLink 'pastebinit temp.file'
+  shareLink 'cat temp.file | pastebinit'
   rm temp.file
 }
 
@@ -275,22 +275,22 @@ wifi(){
   case $(inxi -Nxx) in
     *"BCM43"*)
       sudo aptitude install firmware-b43-installer b43-fwcutter
-      break;;
+      ;;
     *)
       notice "No wifi issues detected."
-#      break;;
+      ;;
   esac
 }
 
 propDrivers(){
   case $mintVersion in
-    *"KDE"*"Mint 13"*) jockey-kde; break;;
-    *"KDE"*"Mint 14"*) software-properties-kde; break;;
-    *"KDE"*"Mint 15"*) software-properties-kde; break;;
-    *"Mint 13"*) jockey-gtk; break;;
-    *"Mint 14"*) software-properties-gtk; break;;
-    *"Mint 15"*) software-properties-gtk; break;;
-    *"Mint 16"*) driver-manager; break;;
+    *"KDE"*"Mint 13"*) jockey-kde;;
+    *"KDE"*"Mint 14"*) software-properties-kde;;
+    *"KDE"*"Mint 15"*) software-properties-kde;;
+    *"Mint 13"*) jockey-gtk;;
+    *"Mint 14"*) software-properties-gtk;;
+    *"Mint 15"*) software-properties-gtk;;
+    *"Mint 16"*) driver-manager;;
   esac
 }
 
@@ -342,15 +342,13 @@ main(){
     done
 #  done
   notice "Please 'like' my company page: https://facebook.com/nightshadePC"
-  notice "Report bugs, errors, unexpected behavior, and requests:" "https://github.com/crimsonmane/nightshade/issues"
+  notice "Report flaws: https://github.com/crimsonmane/nightshade/issues"
   printf 'Thank you for using %s\n' "$title1!"
 }
 
 notice(){
   tput setaf 1 #Red text
-  printf '\n'
   printf '%s\n' "$@"
-  printf '\n'
   tput sgr0 #Reset text
 }
 
