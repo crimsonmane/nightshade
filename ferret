@@ -114,28 +114,86 @@ plex(){
   done
 }
 
+wine(){
+  #clear
+  title "Wine"
+  select toDo in "Install" "Remove" "Do Nothing"
+  do
+    case $toDo in
+      "Install")
+        sudo apt-add-repository ppa:ubuntu-wine/ppa
+        sudo aptitude update
+        apt-cache search wine
+        notice "It's your job to 'sudo apt-get install <package>' depending on which version of wine you're after. Versions ending in odd numbers are considered unstable, while even ones are considered stable. World of Warcraft players will want the latest version regardless."
+        break;;
+      "Remove")
+        sudo aptitude purge -y wine*
+        sudo apt-add-repository --remove ppa:ubuntu-wine/ppa
+        break;;
+      *)
+        break;;
+    esac
+  done
+}
+
 netflixDesktop(){
   #clear
   title "netflix-desktop"
-  select toDo in "Install" "Remove" "Remove and Purge PPA" "Do Nothing"
+  select toDo in "Install" "Remove" "Do Nothing"
   do
     case $toDo in
       "Install")
 	if ! dpkg -l | grep pipelight-multi
 	then
-	  sudo add-apt-repository ppa:pipelight/stable
+	  sudo apt-add-repository ppa:ehoover/compholio
 	fi
 	sudo aptitude update
-	sudo aptitude install -y netflix-desktop pipelight-multi
-	sudo pipelight-plugin --enable silverlight
+	sudo aptitude install -y netflix-desktop
 	break;;
       "Remove")
-	sudo aptitude purge -y netflix-desktop pipelight-multi
-	break;;
-      "Remove and Purge PPA")
 	sudo aptitude purge -y netflix-desktop
+	if ! dpkg -l | grep pipelight-multi
+	then
+	  sudo apt-add-repository --remove ppa:ehoover/compholio
+	fi
+	break;;
+      *)
+	break;;
+    esac
+  done
+}
+
+pipelight(){
+  #clear
+  title "Netflix/Pipelight"
+  select toDo in "Install" "Remove" "Do Nothing"
+  do
+    case $toDo in
+      "Install")
+	if ! dpkg -l | grep pipelight
+	then
+	  sudo aptitude purge pipelight
+	fi
+	if ! dpkg -l | grep netflix-desktop
+	then
+	  sudo apt-add-repository ppa:ehoover/compholio
+	fi
+	sudo apt-add-repository ppa:mqchael/pipelight
+	sudo aptitude update
+	sudo aptitude install pipelight-multi
+	sudo pipelight-plugin --enable silverlight
+	rm -rf ~/.wine-pipelight
+	notice "*****************************************************************" "* Please install both firefox addons that are about to pop up.  *" "* Sometimes UAC doesn't work and you need to use the Overrider. *" "* It's up to you to play with these to get netflix.com to work. *" "* If your browser is open, please close it now.                 *" "* If firefox is not your desired browser, it's up to you to     *" "*                                get these addons yourself.     *" "*****************************************************************"
+	read -n1 -r -p "Press any key to continue..."
+	firefox https://addons.mozilla.org/en-US/firefox/addon/user-agent-overrider/ https://addons.mozilla.org/en-us/firefox/addon/uacontrol/
+	break;;
+      "Remove")
 	sudo aptitude purge -y pipelight-multi
-	sudo add-apt-repository --remove ppa:pipelight/stable
+	sudo apt-add-repository --remove ppa:mqchael/pipelight
+	if ! dpkg -l | grep netflix-desktop
+	then
+	  sudo apt-add-repository --remove ppa:ehoover/compholio
+	fi
 	break;;
       *)
 	break;;
@@ -268,15 +326,17 @@ packageSearch(){
 popularSoftware(){
   #clear
   title "Software Menu"
-  select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Netflix-Desktop/Pipelight" "Google Chrome" "Handbrake"
+  select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Wine" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
   do
     case $toDo in
       "Do Nothing") toDo=-1; break;;
       "Plex Media Server") plex; break;;
       "PS3 Media Server") ps3ms; break;;
-      "Netflix-Desktop/Pipelight") netflixDesktop; break;;
+      "Netflix-Desktop") netflixDesktop; break;;
+      "Netflix/Pipelight") pipelight; break;;
       "Google Chrome") chrome; break;;
       "Handbrake") handbrake; break;;
+      "Wine") wine; break;;
     esac
   done
 }
@@ -287,7 +347,7 @@ main(){
 #  do
     #clear
     title "Main Menu"
-    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Launch Drivers Dialogue" "Boot Repair"
+    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Launch Drivers Dialog" "Boot Repair"
     do
       case $toDo in
 	"Do Nothing") toDo=-1; break;;
@@ -300,7 +360,7 @@ main(){
 	"sniff Xorg log") XorgLog; break;;
 	"sniff syslog") syslog; break;;
 	"Package Search") packageSearch; break;;
-	"Launch Drivers Dialogue") propDrivers; break;;
+	"Launch Drivers Dialog") propDrivers; break;;
 	"Boot Repair") bootRepair; break;;
       esac
     done
