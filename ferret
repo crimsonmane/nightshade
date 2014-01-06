@@ -22,7 +22,7 @@ title(){
 
 updateFerret(){
 	clear
-	echo -e "I'll update ferret now by redownloading from the current source. After this is complete, restart ferret." #The script should do it instead of directing users to a link.
+	echo -e "I'll update ferret now by redownloading from the current source.\nAfter this is complete, restart ferret." #The script should do it instead of directing users to a link.
 	cd
 	wget https://raw.github.com/crimsonmane/nightshade/master/ferret -O ferret
 }
