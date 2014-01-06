@@ -21,8 +21,10 @@ title(){
 }
 
 updateFerret(){
-  notice "To update ferret, simply re-download it, replacing the one you have. Follow this link:" "https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret" ""
-  sleep 3
+	clear
+	echo -e "I'll update ferret now by redownloading from the current source. After this is complete, restart ferret." #The script should do it instead of directing users to a link.
+	cd
+	wget https://raw.github.com/crimsonmane/nightshade/master/ferret -O ferret
 }
 
 shareLink(){
