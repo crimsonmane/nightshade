@@ -20,11 +20,6 @@ title(){
   printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"
 }
 
-updateFerret(){
-  notice "To update ferret, simply re-download it, replacing the one you have. Follow this link:" "https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret" ""
-  sleep 3
-}
-
 shareLink(){
   text=" Share this URL with your helper! "
   line="--------------------------------------"
