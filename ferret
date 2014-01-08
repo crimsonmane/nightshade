@@ -20,13 +20,6 @@ title(){
   printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"
 }
 
-updateFerret(){
-	clear
-	echo -e "I'll update ferret now by redownloading from the current source.\nAfter this is complete, restart ferret." #The script should do it instead of directing users to a link.
-	cd
-	wget https://raw.github.com/cypher-neo/nightshade/master/ferret -O ferret
-}
-
 shareLink(){
   text=" Share this URL with your helper! "
   line="--------------------------------------"
