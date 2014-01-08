@@ -1,4 +1,13 @@
-sudo killall ferret
+# FERRET UPDATE MODULE
+# --------------------
+# ASSUMING FERRET STILL RESIDES IN /home/(username)/
+# MODULE SIMPLY DELETES EXISTING FILE AND DOWNLOADS REPLACEMENT.
+# MODULE IS CALLED WITH &, SO GIVING A COUPLE SECONDS FOR FERRET TO END.
+
+echo "Please wait..."
+sleep 2
 rm ferret
 cd
 wget https://raw.github.com/crimsonmane/nightshade/master/ferret -O ferret
+echo "Update complete."
+bash ferret &
