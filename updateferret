@@ -1,0 +1,8 @@
+#! /bin/bash
+
+updateFerret(){
+	clear
+	echo -e "I'll download Ferret now by from the current source.\nYou can also update Ferret when a new version is released, the same way."
+	cd
+	wget https://raw.github.com/cypher-neo/nightshade/master/ferret -O ferret
+}
