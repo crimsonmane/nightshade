@@ -1,0 +1,3 @@
+sudo killall ferret
+rm ferret
+wget https://raw2.github.com/crimsonmane/nightshade/master/ferret
