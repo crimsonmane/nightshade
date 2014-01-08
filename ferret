@@ -24,7 +24,7 @@ updateFerret(){
 	clear
 	echo -e "I'll update ferret now by redownloading from the current source.\nAfter this is complete, restart ferret." #The script should do it instead of directing users to a link.
 	cd
-	wget https://raw.github.com/crimsonmane/nightshade/master/ferret -O ferret
+	wget https://raw.github.com/cypher-neo/nightshade/master/ferret -O ferret
 }
 
 shareLink(){
