@@ -3,84 +3,88 @@
 #####################################
 # Written by: crimsonmane           #
 # github.com/crimsonmane/nightshade #
-#         revised 20140105          #
+#         revised 20141107          #
 #####################################
 
-initialSetup(){
-  notice "Checking if -pastebinit- is installed..." "Updating -inxi- in order to provide consistent output..." "Enter password to continue (because sudo is needed) or CTRL+C to skip" "(-inxi- updates often and so should you)..."
-  if ! dpkg -l | grep pastebinit
-  then
-    sudo aptitude install pastebinit
-  fi
-  sudo inxi -U
-  sudo -k
-}
+# DEFINE COMMON FUNCTIONS
+title(){ printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"; }
 
-title(){
-  printf '%s\n%s - %s\n%s\n' "$title2" "$title1" "$1" "$title2"
-}
-
-updateFerret(){
-  notice "To update ferret, simply re-download it, replacing the one you have. Follow this link:" "https://github.com/crimsonmane/nightshade/wiki/ferret-wiki#get-ferret" ""
-  sleep 3
-}
+notice(){ printf '%s\n' "$@"; }
 
 shareLink(){
   text=" Share this URL with your helper! "
   line="--------------------------------------"
   printf '\nData collection in progress - please wait...\n'
   printf '%s\nvv%svv\n%s\n' "$line" "$text" "$line"
-  sleep 2
   eval "$1"
   printf '%s\n^^%s^^\n%s\n' "$line" "$text" "$line"
 }
 
-sniffSound(){
-  inxi -Sc0 > temp.file
-  inxi -Axc0 >> temp.file
-  case $mintVersion in
-    *"Mint 16"*)
-      find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
+# DEFINE TROUBLESHOOTER - AUDIO
+audio(){
+  #clear
+  title "Troubleshoot Audio"
+  select item in "Do Nothing" "The only audio device shown is Dummy Output"
+  do
+    case $item in
+      "The only audio device shown is Dummy Output")
+	sudo aptitude purge --safe-resolver alsa-base pulseaudio
+	sudo aptitude install -y alsa-base pulseaudio
+	sudo alsa force-reload
+	notice "Changes will take effect when you reboot. Please reboot."
+	break;;
+      "Same as #2 but that fix didn't work.")
+	notice "Section not written."
+	break;;
+      *)
+	break;;
+    esac
+  done
+}
+
+# DEFINE TROUBLESHOOTER - VIDEO
+video(){
+  #clear
+  notice "Flawed section - do not use!"
+  title "Troubleshoot Video"
+  #select do in $(inxi -Gxx)
+  #do
+    case $(inxi -Gx) in
+      *"Card:"*"Intel"*"drivers:"*"intel"*)
+	printf 'You have intel card with intel drivers.\n'
+	break;;
+      *"Card:"*"NVIDIA"*"driver:"*"nvidia"*)
+	printf 'You have NVIDIA card with nvidia drivers.\n'
+	break;;
+      *"Card:"*"AMD/ATI"*"drivers:"*"ati"*)
+	printf 'You have AMD/ATI card with ati drivers.\n'
+	break;;
+      *)
+	break;;
+    esac
+  #done
+}
+
+# DEFINE TROUBLESHOOTER - WIFI
+wifi(){
+  case $(inxi -Nxx) in
+    *"BCM43"*)
+      notice "Found BCM43xx WiFi card. Enter password to install drivers or CTRL+C to skip."
+      sudo aptitude install firmware-b43-installer
       ;;
     *)
-      find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
+      notice "No wifi issues detected. If an issue does exist please report a flaw."
       ;;
   esac
-  shareLink 'cat temp.file | pastebinit'
-  rm temp.file
 }
 
-XorgLog(){
-  shareLink "egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit"
-}
-
-syslog(){
-  shareLink "{ inxi -c0 -FSRzdfulportcm20; egrep -i 'warn|error|critical' /var/log/syslog; } | pastebinit"
-}
-
-medibuntu(){
-  if inxi -r | grep -i medibuntu
-  then
-    notice "Medibuntu found in sources, causing update issues. Confirm removal by entering password (because sudo is needed), or CTRL+C to skip."
-    if [ -a /etc/apt/sources.list.d/medibuntu* ]
-    then
-      sudo rm /etc/apt/sources.list.d/medibuntu*
-    fi
-      sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
-      sudo sed -i '/medibuntu/d' /etc/apt/sources.list
-      notice "Medibuntu has been removed from sources. Confirm by running Update Manager."
-    else
-    notice "Medibuntu not found on this system. That's good!"
-  fi
-  sudo -k
-}
-
+# POPULAR SOFTWARE SECTION
 ps3ms(){
   #clear
   title "PS3 Media Server"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	sudo apt-add-repository ppa:happy-neko/ps3mediaserver
 	sudo aptitude update
@@ -99,9 +103,9 @@ ps3ms(){
 plex(){
   #clear
   title "Plex Media Server"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	firefox http://www.plexapp.com/getplex/
 	break;;
@@ -117,9 +121,9 @@ plex(){
 wine(){
   #clear
   title "Wine"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
         sudo apt-add-repository ppa:ubuntu-wine/ppa
         sudo aptitude update
@@ -139,9 +143,9 @@ wine(){
 netflixDesktop(){
   #clear
   title "netflix-desktop"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	if ! dpkg -l | grep pipelight-multi
 	then
@@ -166,9 +170,9 @@ netflixDesktop(){
 pipelight(){
   #clear
   title "Netflix/Pipelight"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	if ! dpkg -l | grep pipelight
 	then
@@ -204,9 +208,9 @@ pipelight(){
 handbrake(){
   #clear
   title "Handbrake"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	sudo add-apt-repository ppa:stebbins/handbrake-releases
 	sudo aptitude update
@@ -225,9 +229,9 @@ handbrake(){
 chrome(){
   #clear
   title "Google Chrome"
-  select toDo in "Install" "Remove" "Do Nothing"
+  select item in "Install" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install")
 	wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 	sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/ferret-chrome.list'
@@ -247,9 +251,9 @@ chrome(){
 bootRepair(){
   #clear
   title "Boot Repair"
-  select toDo in "Install & Launch" "Remove" "Do Nothing"
+  select item in "Install & Launch" "Remove" "Do Nothing"
   do
-    case $toDo in
+    case $item in
       "Install & Launch")
 	if ! dpkg -l | grep boot-repair
 	then
@@ -269,40 +273,46 @@ bootRepair(){
   done
 }
 
-video(){
-  notice "Section not yet written."
-}
-
-audio(){
+popularSoftware(){
   #clear
-  title "Troubleshoot Audio"
-  select toDo in "Do Nothing" "The only audio device shown is Dummy Output"
+  title "Software Menu"
+  select item in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Wine" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
   do
-    case $toDo in
-      "The only audio device shown is Dummy Output")
-	sudo aptitude purge --safe-resolver alsa-base pulseaudio
-	sudo aptitude install -y alsa-base pulseaudio
-	sudo alsa force-reload
-	notice "Changes will take effect when you reboot. Please reboot."
-	break;;
-      "Same as #2 but that fix didn't work.")
-	notice "Section not written."
-	break;;
-      *)
-	break;;
+    case $item in
+      "Do Nothing") item=-1; break;;
+      "Plex Media Server") plex; break;;
+      "PS3 Media Server") ps3ms; break;;
+      "Netflix-Desktop") netflixDesktop; break;;
+      "Netflix/Pipelight") pipelight; break;;
+      "Google Chrome") chrome; break;;
+      "Handbrake") handbrake; break;;
+      "Wine") wine; break;;
     esac
   done
 }
 
-wifi(){
-  case $(inxi -Nxx) in
-    *"BCM43"*)
-      sudo aptitude install firmware-b43-installer b43-fwcutter
+# DEFINE SNIFFERS
+sniffSound(){
+  inxi -Sc0 > temp.file
+  inxi -Axc0 >> temp.file
+  case $mintVersion in
+    *"Mint 16"*)
+      find ~/.config/pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
       ;;
     *)
-      notice "No wifi issues detected."
+      find ~/.pulse -name \*source\* -printf '\n\n%c\n%f\n' -execdir cat {} ';' >> temp.file
       ;;
   esac
+  shareLink 'cat temp.file | pastebinit'
+  rm temp.file
+}
+
+XorgLog(){
+  shareLink "egrep -wi 'WW|EE' /var/log/Xorg.0.log | pastebinit"
+}
+
+syslog(){
+  shareLink "{ inxi -c0 -FSRzdfulportcm20; egrep -i 'warn|error|critical' /var/log/syslog; } | pastebinit"
 }
 
 propDrivers(){
@@ -323,34 +333,57 @@ packageSearch(){
   shareLink '{ echo "------installed------"; aptitude search -F "%p %V %v" "$pkg" | grep -iv none; echo "++++not installed++++"; aptitude search -F "%p %V %v" "$pkg" | grep -i none; } | pastebinit'
 }
 
-popularSoftware(){
-  #clear
-  title "Software Menu"
-  select toDo in "Do Nothing" "Plex Media Server" "PS3 Media Server" "Wine" "Netflix-Desktop" "Netflix/Pipelight" "Google Chrome" "Handbrake"
-  do
-    case $toDo in
-      "Do Nothing") toDo=-1; break;;
-      "Plex Media Server") plex; break;;
-      "PS3 Media Server") ps3ms; break;;
-      "Netflix-Desktop") netflixDesktop; break;;
-      "Netflix/Pipelight") pipelight; break;;
-      "Google Chrome") chrome; break;;
-      "Handbrake") handbrake; break;;
-      "Wine") wine; break;;
-    esac
-  done
+# DEFINE STARTUP ROUTINE
+startup(){
+# MOVE TO HOME FOLDER, PER WIKI DOWNLOAD INSTRUCTIONS
+# THIS IS IN CASE USER CALLED FERRET FROM ANOTHER pwd
+# AND EXPECTS THAT FERRET RESIDES WERE WIKI SAYS TO BE
+  cd
+# IF pastebinit NOT INSTALLED, INSTALL IT.
+  notice "Checking if -pastebinit- is installed..." "Updating -inxi- in order to provide consistent output..." "Enter password to continue (because sudo is needed) or CTRL+C to skip" "(-inxi- updates often and so should you)..."
+  if ! dpkg -l | grep pastebinit
+  then
+    sudo aptitude install pastebinit
+  fi
+# UPDATE inxi
+  sudo inxi -U
+# DO AUTOMATED CHECKS
+  medibuntu
+# DROP ELEVATED PRIVILEDGES. GIVES USER CHANCE TO READ NOTICES ON NEXT SUDO.
+  sudo -k
 }
 
+# CHECK IF MEDIBUNTU EXISTS ON THIS SYSTEM. IF YES, REMOVE.
+# ONLY NECESSARY PRIOR TO MINT 16.
+medibuntu(){
+  if inxi -r | grep -i medibuntu
+  then
+    notice "Medibuntu found in sources, causing update issues. Confirm removal by entering password (because sudo is needed), or CTRL+C to skip."
+    if [ -a /etc/apt/sources.list.d/medibuntu* ]
+    then
+      sudo rm /etc/apt/sources.list.d/medibuntu*
+    fi
+      sudo cp /etc/apt/sources.list /etc/apt/sources.list.bkup
+      sudo sed -i '/medibuntu/d' /etc/apt/sources.list
+      notice "Medibuntu has been removed from sources. Confirm by running Update Manager."
+    else
+    notice "Medibuntu not found on this system. That's good!"
+  fi
+  sudo -k
+}
+# DEFINE UPDATE ROUTINE/METHOD
+updateFerret(){
+  wget https://raw.github.com/crimsonmane/nightshade/master/ferret -O ferret
+  notice "Ferret is the newest version."
+}
+
+# DEFINE PRIMARY ROUTINE
 main(){
-#  toDo=0
-#  while [ $toDo -ne -1 ]
-#  do
-    #clear
     title "Main Menu"
-    select toDo in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Launch Drivers Dialog" "Boot Repair"
+    select item in "Do Nothing" "Update Ferret" "Popular Software" "Troubleshoot Audio" "Troubleshoot Video" "Troubleshoot WiFi" "sniff sound" "sniff Xorg log" "sniff syslog" "Package Search" "Launch Drivers Dialog" "Boot Repair"
     do
-      case $toDo in
-	"Do Nothing") toDo=-1; break;;
+      case $item in
+	"Do Nothing") item=-1; break;;
 	"Update Ferret") updateFerret; break;;
 	"Popular Software") popularSoftware; break;;
 	"Troubleshoot Audio") audio; break;;
@@ -364,23 +397,19 @@ main(){
 	"Boot Repair") bootRepair; break;;
       esac
     done
-#  done
+# SHAMELESS MARKETING
   notice "Please 'like' my company page: https://facebook.com/nightshadePC"
+# SHAMELESS BEGGING FOR CONTRIBUTIONS
   notice "Report flaws: https://github.com/crimsonmane/nightshade/issues"
+# EXPRESS GENUINE GRATITUDE
   printf 'Thank you for using %s\n' "$title1!"
+# DROP ELEVATED PRIVILEDGES. GIVES USER A CHANCE TO READ NOTICES ON NEXT SUDO.
+  sudo -k
 }
 
-notice(){
-  tput setaf 1 #Red text
-  printf '%s\n' "$@"
-  tput sgr0 #Reset text
-}
-
-initialSetup
-medibuntu
-wifi
+# RUN-ONCE ROUTINE
 title1="Ferret (version 5)"
 title2="------------------"
 mintVersion=$(inxi -S)
+startup
 main
-sudo -k
