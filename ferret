@@ -3,7 +3,7 @@
 #####################################
 # Written by: crimsonmane           #
 # github.com/crimsonmane/nightshade #
-#         revised 20141107          #
+#         revised 20140109          #
 #####################################
 
 # DEFINE COMMON FUNCTIONS
@@ -45,24 +45,65 @@ audio(){
 # DEFINE TROUBLESHOOTER - VIDEO
 video(){
   #clear
-  notice "Flawed section - do not use!"
   title "Troubleshoot Video"
-  #select do in $(inxi -Gxx)
-  #do
-    case $(inxi -Gx) in
-      *"Card:"*"Intel"*"drivers:"*"intel"*)
-	printf 'You have intel card with intel drivers.\n'
-	break;;
-      *"Card:"*"NVIDIA"*"driver:"*"nvidia"*)
-	printf 'You have NVIDIA card with nvidia drivers.\n'
-	break;;
-      *"Card:"*"AMD/ATI"*"drivers:"*"ati"*)
-	printf 'You have AMD/ATI card with ati drivers.\n'
+  select item in "Do Nothing" "I have Optimus Intel/NVIDIA hybrid graphics card and need Bumblebee."
+  do
+    case $item in
+      "I have Optimus Intel/NVIDIA hybrid graphics card and need Bumblebee.")
+	bumblebeeInstall
 	break;;
       *)
 	break;;
     esac
-  #done
+  done
+}
+
+#DEFINE BUMBLEBEE INSTALLER
+bumblebeeInstall(){
+  sudo apt-add-repository ppa:bumblebee/stable
+  case $mintVersion in
+    *"Mint 16"*)
+      version="saucy"
+      file="/etc/apt/sources.list"
+      break;;
+    *"Mint 15"*)
+      version="raring"
+      file="/etc/apt/sources.list"
+      break;;
+    *"Mint 14"*)
+      version="quantal"
+      file="/etc/apt/sources.list"
+      break;;
+    *"Mint 13"*)
+      version="precise"
+      file="/etc/apt/sources.list"
+      break;;
+    *)
+      notice "Ferret does not support your version. Please report an issue."
+      sleep 4
+      file="/dev/null"
+      break;;
+  esac
+  line1="deb http://archive.ubuntu.com/ubuntu/ $version main restricted universe multiverse"
+  line2="deb http://archive.ubuntu.com/ubuntu/ $version-updates main restricted universe multiverse"
+  line3="deb http://security.ubuntu.com/ubuntu/ $version-security main restricted universe multiverse"
+  line0="The following three lines were added by Ferret, as user requested to install Bumblebee for Optimus Intel/NVIDIA."
+  if $file != "/dev/null"
+  then
+    sudo echo $line0 >> $file
+    sudo echo $line1 >> $file
+    sudo echo $line2 >> $file
+    sudo echo $line3 >> $file
+    sudo aptitude update
+    case $mintVersion in
+      *"Mint 16"*)
+	sudo aptitude install -y bumblebee bumblebee-nvidia primus linux-headers-generic
+	break;;
+      *)
+	sudo aptitude install -y bumblebee bumblebee-nvidia virtualgl linux-headers-generic
+	break;;
+    esac
+  fi
 }
 
 # DEFINE TROUBLESHOOTER - WIFI
@@ -408,8 +449,9 @@ main(){
 }
 
 # RUN-ONCE ROUTINE
-title1="Ferret (version 5)"
+title1="Ferret (version 6)"
 title2="------------------"
 mintVersion=$(inxi -S)
 startup
 main
+
