@@ -104,6 +104,7 @@ bumblebeeInstall(){
 	break;;
     esac
   fi
+  notice "A reboot is required for changes to take effect."
 }
 
 # DEFINE TROUBLESHOOTER - WIFI
