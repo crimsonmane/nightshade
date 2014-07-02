@@ -97,10 +97,10 @@ bumblebeeInstall(){
     sudo aptitude update
     case $mintVersion in
       *"Mint 16"*)
-	sudo aptitude install -y bumblebee bumblebee-nvidia primus linux-headers-generic
+	sudo apt-get install -y bumblebee bumblebee-nvidia primus linux-headers-generic
 	break;;
       *)
-	sudo aptitude install -y bumblebee bumblebee-nvidia virtualgl linux-headers-generic
+	sudo apt-get install -y bumblebee bumblebee-nvidia virtualgl linux-headers-generic
 	break;;
     esac
   fi
