@@ -1,5 +1,5 @@
 
 # CUSTOM ALIAS SECTION
 alias youtube-dl='youtube-dl -o "%(autonumber)s %(title)s.%(ext)s"'
-alias logoff="pkill -KILL -u"
+alias logoff="sudo pkill -KILL -u"
 alias update="sudo aptitude safe-upgrade"
